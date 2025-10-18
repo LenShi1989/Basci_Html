@@ -1,0 +1,88 @@
+/* 選擇器{樣式} */
+/* 給誰改樣式{改什麼樣式} */
+p {
+  color: green;
+  /* 修改了文字大小為12像素 */
+  font-size: 12px;
+}
+
+.woman {
+  color: pink;
+}
+
+.two {
+  color: blue;
+}
+
+.box {
+  width: 150px;
+  height: 100px;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+#len {
+  color: purple;
+}
+
+/* 萬用選擇器 */
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+h2 {
+  font-family: '微軟雅黑';
+}
+
+.sich {
+  font-family: '標楷體', 'times new roman';
+  font-size: 18px;
+  /* color: blue; */
+  /* color: #e512de; */
+  color: rgb(255, 0, 0);
+  /* 文字間距 */
+  line-height: 27px;
+}
+
+.bold {
+  /* font-weight: bold; */
+  font-weight: 200;
+
+}
+
+h2 {
+  font-weight: 700;
+  /* 讓h2文字居中對齊 */
+  text-align: center;
+  /* 底線 */
+  text-decoration: underline;
+  /* 刪除線 */
+  /* text-decoration: line-through; */
+  /* 上滑線 */
+  /* text-decoration: overline; */
+}
+
+em {
+  /* font-style: normal; */
+  /* font: font-style font-weight font-size font-family; */
+  font: italic 700 50px '標楷體';
+}
+
+a {
+  /* 取修a默認的底線 */
+  color: purple;
+  text-decoration: none;
+}
+
+.indentation {
+  /* 文字縮排2個字元 */
+  text-indent: 2em;
+}

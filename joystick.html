@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Remote Control</title>
+    <style>
+        body {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        .remote-control {
+            width: 600px;
+            height: 400px;
+            background-color: #555;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .joystick-base {
+            width: 150px;
+            height: 150px;
+            background-color: #444;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .joystick-stick {
+            width: 50px;
+            height: 50px;
+            background-color: #888;
+            border-radius: 50%;
+            border: 2px solid #aaa;
+            position: absolute;
+            cursor: grab;
+        }
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .screen {
+            width: 200px;
+            height: 120px;
+            background-color: #8fbc8f;
+            border: 2px solid #333;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #222;
+            font-size: 1.2em;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .button-takeoff {
+            background-color: #5cb85c;
+        }
+        #joystick-positions {
+            color: #eee;
+            font-size: 0.9em;
+            height: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="remote-control">
+    <div class="joystick-base">
+        <div class="joystick-stick" id="left-stick"></div>
+    </div>
+    <div class="center-panel">
+        <div id="joystick-positions">
+            Left: (0, 0) | Right: (0, 0)<br>
+            Action: None
+        </div>
+        <div class="screen">
+            Telemetry
+        </div>
+        <button class="button button-takeoff">Take Off</button>
+        <button class="button">Land</button>
+    </div>
+    <div class="joystick-base">
+        <div class="joystick-stick" id="right-stick"></div>
+    </div>
+</div>
+
+<script>
+    const positionDisplay = document.getElementById('joystick-positions');
+    const leftStick = document.getElementById('left-stick');
+    const rightStick = document.getElementById('right-stick');
+    const leftBase = leftStick.parentElement;
+    const rightBase = rightStick.parentElement;
+
+    let leftPos = { x: 0, y: 0 };
+    let rightPos = { x: 0, y: 0 };
+
+    function makeDraggable(stickElement, baseElement, stickName) {
+        let isDragging = false;
+
+        stickElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            stickElement.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                stickElement.style.cursor = 'grab';
+                // Reset to center
+                stickElement.style.left = '50px';
+                stickElement.style.top = '50px';
+
+                if (stickName === 'left') {
+                    leftPos = { x: 0, y: 0 };
+                } else {
+                    rightPos = { x: 0, y: 0 };
+                }
+                updatePositionDisplay();
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const baseRect = baseElement.getBoundingClientRect();
+            const maxDist = baseRect.width / 2 - stickElement.offsetWidth / 2;
+
+            let x = e.clientX - baseRect.left - (baseRect.width / 2);
+            let y = e.clientY - baseRect.top - (baseRect.height / 2);
+
+            let distance = Math.sqrt(x*x + y*y);
+
+            if (distance > maxDist) {
+                x = (x / distance) * maxDist;
+                y = (y / distance) * maxDist;
+            }
+
+            stickElement.style.left = (baseRect.width / 2 + x - stickElement.offsetWidth / 2) + 'px';
+            stickElement.style.top = (baseRect.height / 2 + y - stickElement.offsetHeight / 2) + 'px';
+
+            // Normalize position from -100 to 100
+            const normX = Math.round((x / maxDist) * 100);
+            const normY = Math.round((-y / maxDist) * 100); // Invert Y-axis
+
+            if (stickName === 'left') {
+                leftPos = { x: normX, y: normY };
+            } else {
+                rightPos = { x: normX, y: normY };
+            }
+            updatePositionDisplay();
+        });
+    }
+
+    function updatePositionDisplay() {
+        let leftAction = `Throttle: ${leftPos.y}, Yaw: ${leftPos.x}`;
+        let rightAction = `Pitch: ${rightPos.y}, Roll: ${rightPos.x}`;
+
+        positionDisplay.innerHTML = `Left: (${leftPos.x}, ${leftPos.y}) | Right: (${rightPos.x}, ${rightPos.y})<br>Action: ${leftAction} | ${rightAction}`;
+    }
+
+    makeDraggable(leftStick, leftBase, 'left');
+    makeDraggable(rightStick, rightBase, 'right');
+
+</script>
+
+</body>
+</html>

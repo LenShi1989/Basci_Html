@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>體驗CSS與法規範</title>
-  <style>
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- <style>
     /* 選擇器{樣式} */
     /* 給誰改樣式{改什麼樣式} */
     p {
@@ -53,8 +54,48 @@
     .sich {
       font-family: '標楷體', 'times new roman';
       font-size: 18px;
+      /* color: blue; */
+      /* color: #e512de; */
+      color: rgb(255, 0, 0);
+      /* 文字間距 */
+      line-height: 27px;
     }
-  </style>
+
+    .bold {
+      /* font-weight: bold; */
+      font-weight: 200;
+
+    }
+
+    h2 {
+      font-weight: 700;
+      /* 讓h2文字居中對齊 */
+      text-align: center;
+      /* 底線 */
+      text-decoration: underline;
+      /* 刪除線 */
+      /* text-decoration: line-through; */
+      /* 上滑線 */
+      /* text-decoration: overline; */
+    }
+
+    em {
+      /* font-style: normal; */
+      /* font: font-style font-weight font-size font-family; */
+      font: italic 700 50px '標楷體';
+    }
+
+    a {
+      /* 取修a默認的底線 */
+      color: purple;
+      text-decoration: none;
+    }
+
+    .indentation {
+      /* 文字縮排2個字元 */
+      text-indent: 2em;
+    }
+  </style> -->
 </head>
 
 <body>
@@ -85,15 +126,39 @@
   <hr>
   <br>
   <h2>青雲志</h2>
-  <p class="sich"> 無人扶我青雲志， 我自踏雪至山巔。</p>
+  <p class="sich indentation"> 無人扶我青雲志， 我自踏雪至山巔。</p>
   <p class="sich"> 若是命中無此運， 孤身亦可登崑崙。</p>
   <p class="sich"> 紅塵贈我三尺劍， 酒看瘦馬一世街。</p>
   <p class="sich"> 世人朝路乃絕澗， 獨見眾生止步前。</p>
   <p class="sich"> 海到盡頭天作岸， 山登絕頂我為峰。</p>
-  <p class="sich"> 如若東山能再起， 大鵬展翅九萬裡。</p>
+  <p class="sich bold indentation"> 如若東山能再起， 大鵬展翅九萬裡。</p>
   <p class="sich"> 一入紅塵夢易眞， 一朝悟透心境名。</p>
   <p class="sich"> 一朝悟道見真我， 昔日枷鎖皆雲煙。</p>
   <p class="sich"> 天門將至百運開， 拂塵輕笑問仙來。</p>
+  <br>
+  <em>em標籤預設是斜體</em>
+  <br>
+  <a href="#">紫色風暴</a>
+  <br>
+  <!-- .len$*5 -->
+  <div class="len1"></div>
+  <div class="len2"></div>
+  <div class="len3"></div>
+  <div class="len4"></div>
+  <div class="len5"></div>
+
+  <div>你在哭什麼哭 沒出息</div>
+  <!-- div{你在哭什麼哭 沒出息}*5 -->
+  <div>你在哭什麼哭 沒出息</div>
+  <div>你在哭什麼哭 沒出息</div>
+  <div>你在哭什麼哭 沒出息</div>
+  <div>你在哭什麼哭 沒出息</div>
+  <div>你在哭什麼哭 沒出息</div>
+
+  <br>
+  <hr>
+
+
 
 
 </body>
