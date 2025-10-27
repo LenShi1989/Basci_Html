@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>透明玻璃風格 - 可滑動選單（Glassmorphism Sliding Menu）</title>
+  <style>
+    :root {
+      --menu-width: 320px;
+      --glass-bg: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.22);
+      --accent: rgba(255, 255, 255, 0.9);
+      --accent-2: rgba(255, 255, 255, 0.6);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      --transition: 300ms cubic-bezier(.2, .9, .2, 1);
+    }
+
+    /* Reset */
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
+    }
+
+    /* Background to demonstrate glass effect */
+    .demo-bg {
+      height: 100vh;
+      background-image: linear-gradient(120deg, #4f46e5 0%, #06b6d4 40%, #ef4444 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      padding: 40px;
+      overflow: hidden;
+    }
+
+    .card {
+      width: min(1100px, 95%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 2.5fr 1fr;
+      gap: 20px;
+      align-items: start;
+      backdrop-filter: blur(8px) saturate(120%);
+      -webkit-backdrop-filter: blur(8px) saturate(120%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .main-content h1 {
+      margin: 0 0 12px 0;
+      font-size: 22px
+    }
+
+    .main-content p {
+      margin: 0 0 8px;
+      color: var(--accent-2)
+    }
+
+    /* Floating menu button */
+    .menu-btn {
+      position: fixed;
+      left: 18px;
+      top: 18px;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      z-index: 60;
+      transition: transform var(--transition);
+    }
+
+    .menu-btn:active {
+      transform: scale(.98)
+    }
+
+    .menu-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2
+    }
+
+    /* Overlay when menu is open */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 7, 7, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+      z-index: 50;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    /* Sliding menu */
+    .side-menu {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: var(--menu-width);
+      transform: translateX(calc(-1 * var(--menu-width)));
+      transition: transform var(--transition), visibility 0s linear 300ms;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+      visibility: hidden;
+    }
+
+    .side-menu.inner {
+      width: 100%;
+      height: 100%;
+    }
+
+    .side-menu.panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      border-right: 1px solid var(--glass-border);
+      border-radius: 0 18px 18px 0;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px) saturate(120%);
+      -webkit-backdrop-filter: blur(10px) saturate(120%);
+      overflow: hidden;
+    }
+
+    .side-menu.open {
+      transform: translateX(0);
+      transition: transform var(--transition);
+      visibility: visible;
+    }
+
+    .menu-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 6px;
+      margin-bottom: 6px
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .menu-title {
+      font-weight: 600
+    }
+
+    .menu-sub {
+      font-size: 13px;
+      color: var(--accent-2)
+    }
+
+    .menu-list {
+      padding: 12px 6px;
+      overflow: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background var(--transition), transform var(--transition);
+      color: var(--accent);
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.03)
+    }
+
+    .menu-item .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.02)
+    }
+
+    .menu-item h4 {
+      margin: 0;
+      font-size: 14px
+    }
+
+    .menu-item p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--accent-2)
+    }
+
+    .menu-footer {
+      padding: 12px 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.03);
+      font-size: 13px;
+      color: var(--accent-2)
+    }
+
+    /* custom scrollbar for menu */
+    .menu-list::-webkit-scrollbar {
+      width: 9px
+    }
+
+    .menu-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      border: 3px solid transparent;
+      background-clip: padding-box
+    }
+
+    /* Responsive */
+    @media (max-width:780px) {
+
+      :root {
+        --menu-width: 86%;
+      }
+
+      .menu-btn {
+        left: 14px;
+        top: 14px
+      }
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      /* On mobile, stack layout, so no sidebar concept */
+      .card.sidebar-collapsed {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      .card aside,
+      .card.sidebar-collapsed > aside {
+        padding-left: 0;
+      }
+      .toggle-sidebar-btn {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .demo-bg {
+        padding: 20px;
+      }
+      .card {
+        padding: 18px;
+      }
+      .main-content h1 {
+        font-size: 20px;
+      }
+    }
+
+    /* Collapsible Sidebar Styles */
+    .card {
+      transition: grid-template-columns 0.4s cubic-bezier(.2, .9, .2, 1);
+    }
+    .card > aside {
+      position: relative;
+      transition: padding 0.4s cubic-bezier(.2, .9, .2, 1);
+    }
+    .toggle-sidebar-btn {
+      position: absolute;
+      top: 20px;
+      left: -15px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--accent);
+      cursor: pointer;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+      padding-left: 2px; /* optical alignment */
+      transition: transform 0.4s cubic-bezier(.2, .9, .2, 1), left 0.4s cubic-bezier(.2, .9, .2, 1);
+    }
+    .card.sidebar-collapsed {
+      grid-template-columns: 1fr 40px; /* collapsed width */
+      gap: 0;
+    }
+    .card.sidebar-collapsed > aside {
+        padding-left: 25px; /* make space for the button */
+    }
+    .card.sidebar-collapsed .toggle-sidebar-btn {
+      transform: scaleX(-1);
+      left: 5px;
+    }
+    .card aside > div {
+        transition: opacity 0.3s, transform 0.3s;
+    }
+    .card.sidebar-collapsed aside > div {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- menu toggle button -->
+  <button class="menu-btn" id="menuBtn" aria-label="開啟選單" aria-expanded="false" aria-controls="sideMenu">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <!-- overlay -->
+  <div class="overlay" id="overlay" tabindex="-1"></div>
+
+  <!-- sliding side menu -->
+  <nav id="sideMenu" class="side-menu panel" aria-hidden="true">
+    <div class="menu-header">
+      <div class="avatar">LS</div>
+      <div>
+        <div class="menu-title">Len Shi</div>
+        <div class="menu-sub">透明玻璃風格範例</div>
+      </div>
+    </div>
+
+    <div class="menu-list" id="menuList">
+      <!-- many items to enable scrolling -->
+      <div class="menu-item" tabindex="0">
+        <div class="icon">🏠</div>
+        <div>
+          <h4>首頁</h4>
+          <p>回到儀表板</p>
+        </div>
+      </div>
+      <div class="menu-item" tabindex="0">
+        <div class="icon">🔔</div>
+        <div>
+          <h4>通知</h4>
+          <p>最近的活動</p>
+        </div>
+      </div>
+      <div class="menu-item" tabindex="0">
+        <div class="icon">📁</div>
+        <div>
+          <h4>檔案</h4>
+          <p>我的文件與上傳</p>
+        </div>
+      </div>
+      <div class="menu-item" tabindex="0">
+        <div class="icon">⚙️</div>
+        <div>
+          <h4>設定</h4>
+          <p>個人化與偏好</p>
+        </div>
+      </div>
+
+      <!-- filler items -->
+      <script>
+        // 在 menu-list 裡加入更多項目（讓滾動效果明顯）
+        const fillerItems = ['分析', '專案', '成員', '通訊錄', '日曆', '報表', '協作', '整合', 'API', '幫助中心', '意見反饋'];
+        const menuList = document.currentScript?.previousElementSibling || document.getElementById('menuList');
+        if (menuList) {
+          for (const t of fillerItems) {
+            const el = document.createElement('div');
+            el.className = 'menu-item'; el.tabIndex = 0;
+            el.innerHTML = `<div class="icon">📌</div><div><h4>${t}</h4><p>說明文字</p></div>`;
+            menuList.appendChild(el);
+          }
+        }
+      </script>
+
+    </div>
+
+    <div class="menu-footer">版本 1.0 • 透明玻璃風格示範</div>
+  </nav>
+
+  <!-- main demo content -->
+  <main class="demo-bg">
+    <div class="card">
+      <div class="main-content">
+        <h1>玻璃風格可滑動選單（Glassmorphism Sliding Menu）</h1>
+        <p>點擊左上角按鈕或在手機上向右滑動即可開啟選單，選單支援滑動收合、滾動內容與鍵盤無障礙。</p>
+
+        <p>設計重點：</p>
+        <ul>
+          <li>使用 <code>backdrop-filter</code> 製造模糊玻璃效果</li>
+          <li>半透明漸層和細緻邊框讓元素更有層次</li>
+          <li>支援觸控滑動（左/右）以開啟或關閉選單</li>
+        </ul>
+
+        <p>你可以把整個檔案儲存為 <code>index.html</code>，直接開啟於瀏覽器測試。</p>
+      </div>
+      <aside>
+        <button id="toggleSidebarBtn" class="toggle-sidebar-btn" aria-label="收合側邊欄" aria-expanded="true">»</button>
+        <div
+          style="padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);">
+          <h3 style="margin-top:0">示範區塊</h3>
+          <p style="margin:0;color:var(--accent-2)">右側為固定面板範例，可放置快速資訊或控制元件。</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // 基本開關行為與觸控滑動支持
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('overlay');
+
+    function openMenu() {
+      sideMenu.classList.add('open');
+      overlay.classList.add('show');
+      menuBtn.setAttribute('aria-expanded', 'true');
+      sideMenu.setAttribute('aria-hidden', 'false');
+    }
+    function closeMenu() {
+      sideMenu.classList.remove('open');
+      overlay.classList.remove('show');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      sideMenu.setAttribute('aria-hidden', 'true');
+    }
+
+    menuBtn.addEventListener('click', () => { const isOpen = sideMenu.classList.contains('open'); isOpen ? closeMenu() : openMenu(); });
+    overlay.addEventListener('click', closeMenu);
+
+    // ESC 關閉
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+    // 觸控滑動手勢（支援在整個視窗上滑動以開/關）
+    let touchStartX = null, touchCurrentX = null, touchStartY = null, touchCurrentY = null;
+    const threshold = 40; // 觸發滑動的最小位移
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchCurrentX = touchStartX;
+      touchStartY = e.touches[0].clientY;
+      touchCurrentY = touchStartY;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (touchStartX === null) return;
+      touchCurrentX = e.touches[0].clientX;
+      touchCurrentY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (touchStartX === null || touchCurrentX === null) return;
+
+      const dx = touchCurrentX - touchStartX;
+      const dy = touchCurrentY - touchStartY;
+      
+      // 判斷為主要水平滑動
+      if (Math.abs(dx) > Math.abs(dy) + 10) { // 加上一個小容錯值
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        
+        // 若起手在左側邊緣，右滑時嘗試開啟（模擬 edge swipe）
+        const edgeZone = Math.min(40, vw * 0.06);
+        if (touchStartX < edgeZone && dx > threshold) {
+          openMenu();
+        }
+
+        // 若選單已開啟，左滑關閉
+        if (sideMenu.classList.contains('open') && dx < -threshold) {
+          closeMenu();
+        }
+      }
+
+      touchStartX = null; touchCurrentX = null; touchStartY = null; touchCurrentY = null;
+    });
+
+    // 提升可用性：當選單開啟時，按 tab 鍵循環焦點（簡易實作）
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && sideMenu.classList.contains('open')) {
+        const focusable = sideMenu.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      }
+    });
+
+  </script>
+
+
+  <!-- Dropdown popup block (彈窗式下拉選單) -->
+  <div class="dropdown-wrapper" aria-live="polite">
+    <button id="dropdownBtn" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">▾ 選擇項目</button>
+
+    <div id="dropdownPanel" class="dropdown-panel" role="menu" aria-hidden="true">
+      <div class="dropdown-header">
+        <strong>快速選單</strong>
+        <button id="dropdownClose" class="small-close" aria-label="關閉選單">✕</button>
+      </div>
+
+      <div class="dropdown-content" tabindex="0">
+        <!-- 可滑動內容列表示範 -->
+        <div class="dd-item">選項 1 · 描述文字</div>
+        <div class="dd-item">選項 2 · 描述文字</div>
+        <div class="dd-item">選項 3 · 描述文字</div>
+        <div class="dd-item">選項 4 · 描述文字</div>
+        <div class="dd-item">選項 5 · 描述文字</div>
+        <div class="dd-item">選項 6 · 描述文字</div>
+        <div class="dd-item">選項 7 · 描述文字</div>
+        <div class="dd-item">選項 8 · 描述文字</div>
+        <div class="dd-item">選項 9 · 描述文字</div>
+        <div class="dd-item">選項 10 · 描述文字</div>
+      </div>
+
+      <div class="dropdown-footer">
+        <button id="ddConfirm" class="btn">確認</button>
+        <button id="ddCancel" class="btn ghost">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Dropdown (彈窗式下拉式選單) */
+    .dropdown-wrapper {
+      position: fixed;
+      right: 20px;
+      top: 86px;
+      z-index: 80;
+      font-family: inherit
+    }
+
+    .dropdown-toggle {
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+      color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .dropdown-panel {
+      width: 300px;
+      margin-top: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      transform-origin: top center;
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      backdrop-filter: blur(10px) saturate(120%);
+      -webkit-backdrop-filter: blur(10px) saturate(120%);
+      max-height: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 280ms cubic-bezier(.2, .9, .2, 1);
+    }
+
+    .dropdown-panel.show {
+      max-height: 420px;
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .dropdown-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    .small-close {
+      background: transparent;
+      border: 0;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    .dropdown-content {
+      padding: 10px 12px;
+      overflow: auto;
+      max-height: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .dd-item {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer
+    }
+
+    .dd-item:active {
+      transform: scale(.995)
+    }
+
+    .dropdown-footer {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      justify-content: flex-end
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 0;
+      background: rgba(255, 255, 255, 0.08);
+      cursor: pointer
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.04)
+    }
+
+    /* small screens adjust position */
+    @media (max-width:520px) {
+      .dropdown-wrapper {
+        right: 12px;
+        left: 12px;
+        top: 78px
+      }
+
+      .dropdown-panel {
+        width: auto
+      }
+    }
+  </style>
+
+  <script>
+    (function () {
+      const btn = document.getElementById('dropdownBtn');
+      const panel = document.getElementById('dropdownPanel');
+      const close = document.getElementById('dropdownClose');
+      const overlayEl = document.getElementById('overlay');
+      const confirm = document.getElementById('ddConfirm');
+      const cancel = document.getElementById('ddCancel');
+
+      function openDropdown() {
+        panel.classList.add('show');
+        panel.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-expanded', 'true');
+        // if overlay exists, show subtle overlay
+        if (overlayEl) overlayEl.classList.add('show');
+      }
+      function closeDropdown() {
+        panel.classList.remove('show');
+        panel.setAttribute('aria-hidden', 'true');
+        btn.setAttribute('aria-expanded', 'false');
+        if (overlayEl) overlayEl.classList.remove('show');
+      }
+
+      btn.addEventListener('click', (e) => { const is = panel.classList.contains('show'); is ? closeDropdown() : openDropdown(); e.stopPropagation(); });
+      close.addEventListener('click', closeDropdown);
+      cancel.addEventListener('click', closeDropdown);
+
+      // 點擊外部時關閉（註：若 overlay 被點擊會同時關閉側邊選單，這裡額外監聽 document）
+      document.addEventListener('click', (e) => { if (!panel.contains(e.target) && !btn.contains(e.target)) closeDropdown(); });
+
+      // ESC 關閉
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDropdown(); });
+
+      // 簡單的觸控向上/向下滑動關閉（在面板內）
+      let sy = null, cy = null;
+      const threshold = 60;
+      const content = panel.querySelector('.dropdown-content');
+      if (content) {
+        content.addEventListener('touchstart', (ev) => { if (ev.touches.length !== 1) return; sy = ev.touches[0].clientY; cy = sy; }, { passive: true });
+        content.addEventListener('touchmove', (ev) => { if (!sy) return; cy = ev.touches[0].clientY; }, { passive: true });
+        content.addEventListener('touchend', () => { if (!sy || !cy) { sy = null; cy = null; return; } const dy = cy - sy; if (dy > threshold) { closeDropdown(); } sy = null; cy = null; });
+      }
+
+      // 選項點擊示範：把選中的內容放到按鈕上
+      panel.querySelectorAll('.dd-item').forEach(item => {
+        item.addEventListener('click', () => {
+          btn.textContent = '▾ ' + item.textContent.trim();
+          // highlight briefly
+          item.style.outline = '2px solid rgba(255,255,255,0.08)';
+          setTimeout(() => item.style.outline = '0', 220);
+        });
+      });
+
+      // 確認按鈕（示範用途）
+      confirm.addEventListener('click', () => { closeDropdown(); alert('已確認'); });
+
+      // Right Sidebar Toggle
+      const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+      const cardElement = document.querySelector('.card');
+      if (toggleSidebarBtn && cardElement) {
+        toggleSidebarBtn.addEventListener('click', () => {
+          const isCollapsed = cardElement.classList.toggle('sidebar-collapsed');
+          toggleSidebarBtn.setAttribute('aria-expanded', !isCollapsed);
+          toggleSidebarBtn.setAttribute('aria-label', isCollapsed ? '展開側邊欄' : '收合側邊欄');
+        });
+      }
+
+    })();
+  </script>
+
+</body>
+
+</html>
