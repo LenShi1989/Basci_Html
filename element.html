@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>行內模塊元素練習</title>
+  <style>
+    input {
+      width: 249px;
+      height: 35px;
+    }
+
+    a {
+      width: 150px;
+      height: 50px;
+      background-color: pink;
+      /* 把行內元素 a 轉換為 塊級元素 */
+      display: block;
+    }
+
+    div {
+      width: 300px;
+      height: 100px;
+      background-color: purple;
+      /* 把div 塊級元素 轉換為 行內模塊元素 */
+      display: inline;
+    }
+
+    span {
+      width: 300px;
+      height: 40px;
+      background-color: skyblue;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text">
+  <input type="text">
+  <br>
+  <br>
+  <a href="#">金星阿姨</a>
+  <a href="#">金星阿姨</a>
+  <br>
+  <br>
+  <div>我是塊級元素</div>
+  <div>我是塊級元素</div>
+  <span>行內元素轉換為行內塊元素</span>
+  <span>行內元素轉換為行內塊元素</span>
+</body>
+
+</html>
