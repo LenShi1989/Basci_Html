@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>行高的繼承</title>
+    <style>
+      body {
+        color: purple;
+        /* font: 20px/50px "標楷體"; */
+        font: 20px/1.5 "標楷體";
+      }
+
+      div {
+        /* 子元素繼承了父元素的行高1.5 */
+        /* 這個1.5就是當前元素文字大小font-size的1.5倍 所以當前div的行高就是21像素 */
+        font-size: 14px;
+      }
+
+      p {
+        /* 1.5 * 16 = 24 當前的行高 */
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>捷廣系統整合</div>
+    <p>捷廣系統整合</p>
+    <ul>
+      <li>我沒有指定文字大小</li>
+    </ul>
+  </body>
+</html>

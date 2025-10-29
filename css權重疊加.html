@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>css權重疊加</title>
+    <style>
+      /* 複合選擇器會有權重疊家的問題 */
+      /* ul li 權重 0,0,0,1 + 0,0,0,1 = 0,0,0,2*/
+      ul li {
+        color: green;
+      }
+
+      /* li 的權重是 0,0,0,1*/
+      li {
+        color: red;
+      }
+
+      /* .nav li 權重 0,0,1,0 + 0,0,0,1 = 0,0,1,1 */
+      .nav li {
+        color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="nav">
+      <li>香蕉</li>
+      <li>蘋果</li>
+      <li>橘子</li>
+    </ul>
+  </body>
+</html>
