@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>邊框練習</title>
+    <style>
+      /* 請給一個 200*200 的盒子，設置上邊框為紅色，其餘邊框為藍色 */
+      div {
+        width: 200px;
+        height: 200px;
+        /* border-top: 1px solid red;
+        border-bottom: 1px solid blue;
+        border-left: 1px solid blue;
+        border-right: 1px solid blue; */
+        /* border包含四條邊 */
+        border: 1px solid blue;
+        /* 層疊性 只是層疊了 上邊框的藍色 */
+        border-top: 1px solid red;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>
