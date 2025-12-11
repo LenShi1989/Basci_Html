@@ -1,0 +1,50 @@
+.w {
+  width: 1200px;
+  margin: auto;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.header {
+  height: 79px;
+  background-color: purple;
+  /* 注意此地方會層疊 w 裡面的margin */
+  margin: 30px auto;
+}
+
+.logo {
+  float: left;
+  width: 282px;
+  height: 79px;
+  background-color: skyblue;
+}
+
+.nav {
+  float: left;
+  margin-left: 10px;
+}
+
+.nav ul li {
+  float: left;
+  margin: 0 15px;
+}
+
+.nav ul li a {
+  display: block;
+  height: 60px;
+  padding: 0 10px;
+  line-height: 60px;
+  font-size: 26px;
+  color: #050505;
+}
+
+.nav ul li a:hover {
+  border-bottom: 2px solid #00a4ff;
+  color: #00a4ff;
+}
