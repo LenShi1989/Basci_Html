@@ -48,3 +48,33 @@ a {
   border-bottom: 2px solid #00a4ff;
   color: #00a4ff;
 }
+
+/* search搜索模塊 */
+.search {
+  float: left;
+  width: 526px;
+  height: 45px;
+  background-color: skyblue;
+  margin-left: 50px;
+}
+
+.search input {
+  float: left;
+  width: 430px;
+  height: 76px;
+  border: 1px solid #00a4ff;
+  border-right: 0;
+  color: #bfbfbf;
+  font-size: 14px;
+  padding-left: 15px;
+}
+
+.search button {
+  float: left;
+  width: 78px;
+  height: 79px;
+  /* 按鈕button默認有個邊框需要我們手動去掉 */
+  border: 0;
+  /* background-color: blue; */
+  background: url(/images/btn.png);
+}
