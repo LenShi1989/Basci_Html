@@ -13,7 +13,7 @@ a {
 
 .header {
   height: 79px;
-  background-color: purple;
+  /* background-color: purple; */
   /* 注意此地方會層疊 w 裡面的margin */
   margin: 30px auto;
 }
@@ -22,7 +22,7 @@ a {
   float: left;
   width: 282px;
   height: 79px;
-  background-color: skyblue;
+  /* background-color: skyblue; */
 }
 
 .nav {
@@ -55,7 +55,7 @@ a {
   width: 526px;
   height: 45px;
   background-color: skyblue;
-  margin-left: 50px;
+  margin-left: 70px;
 }
 
 .search input {
@@ -77,4 +77,12 @@ a {
   border: 0;
   /* background-color: blue; */
   background: url(/images/btn.png);
+}
+
+.user{
+  float: right;
+  line-height: 79px;
+  margin-right: 130px;
+  font-size: 14px;
+  color: #666;
 }
