@@ -79,10 +79,38 @@ a {
   background: url(/images/btn.png);
 }
 
-.user{
+.user {
   float: right;
   line-height: 79px;
   margin-right: 130px;
   font-size: 14px;
   color: #666;
+}
+
+/* banner區域 */
+.banner {
+  height: 421px;
+  background-color: #1c036c;
+}
+
+.banner .w {
+  height: 421px;
+  background: url(/images/banner2.png) no-repeat center top;
+}
+
+.subnav {
+  width: 190px;
+  height: 421px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.subnav ul li {
+  height: 45px;
+  line-height: 45px;
+  padding: 0 20px;
+}
+
+.subnav ul li a {
+  font-size: 14px;
+  color: #fff;
 }
