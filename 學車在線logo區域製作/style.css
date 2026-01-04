@@ -99,6 +99,7 @@ a {
 }
 
 .subnav {
+  float: left;
   width: 190px;
   height: 421px;
   background: rgba(0, 0, 0, 0.3);
@@ -113,4 +114,74 @@ a {
 .subnav ul li a {
   font-size: 14px;
   color: #fff;
+}
+
+.subnav ul li a span {
+  float: right;
+}
+
+.subnav ul li a:hover {
+  color: #00a4ff;
+}
+
+.course {
+  float: right;
+  width: 230px;
+  height: 340px;
+  background-color: #fff;
+  /* 浮動的盒子不會有外邊距合併的問題 */
+  margin-top: 40px;
+}
+
+.course h2 {
+  height: 48px;
+  background-color: #9bceea;
+  text-align: center;
+  line-height: 48px;
+  font-size: 18px;
+  color: #fff;
+  margin: 0;
+}
+
+.bd {
+  /* padding: 0 20px; */
+}
+
+.bd ul {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-left: 24px;
+}
+
+.bd ul li {
+  width: 168px;
+  padding: 13px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.bd ul li h4 {
+  margin: 0 0;
+  font-size: 16px;
+  color: #4e4e4e;
+}
+
+.bd ul li p {
+  margin: 0 0;
+  font-size: 12px;
+  color: #a5a5a5;
+}
+
+.bd .more {
+  display: block;
+  margin: 0 auto;
+  margin-top: 5px;
+  padding: 0 40px;
+  width: 75px;
+  height: 38px;
+  border: 1px solid #00a4ff;
+  text-align: center;
+  line-height: 38px;
+  color: #00a4ff;
+  font-size: 16px;
+  font-weight: 700;
 }
