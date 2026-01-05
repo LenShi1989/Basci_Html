@@ -39,20 +39,22 @@ rowspan="2"     //跨欄置中
 background-image: url();                //插入圖片
 background-position: left center;       //圖片位置
 text-indent: 2.8em;                     //文字縮排
-line-height:跟背景高度一樣               //文字與背景上下置中 
+line-height:跟背景高度一樣               //文字與背景上下置中
 
-
-
-
-
-
-
-
-
-
-
-
-
+# 清除浮動
+```css
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
+}
+```
 
 
 

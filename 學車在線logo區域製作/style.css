@@ -21,6 +21,20 @@ a {
   text-decoration: none;
 }
 
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
 .header {
   height: 42px;
   /* background-color: pink; */
@@ -281,4 +295,10 @@ a {
 
 .box-bd .info span {
   color: #ff7c2d;
+}
+
+/* footer 模塊 */
+.footer {
+  height: 415px;
+  background-color: pink;
 }
