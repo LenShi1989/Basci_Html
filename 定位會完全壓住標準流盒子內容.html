@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>定位會完全壓住標準流盒子內容</title>
+    <style>
+      .box {
+        /* 1.浮動的元素不會壓住下面標準流的文字 */
+        /* float: left; */
+        /* 2. 絕對定位(固定定位) 會壓住下面標準流所有的內容 */
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box"></div>
+    <p>身處低谷不自棄 我命由我不由天</p>
+  </body>
+</html>
